@@ -14,6 +14,7 @@ public class CurrencyBean {
 	private BigDecimal conversionMultiple;
 	private BigDecimal quantity;
 	private BigDecimal totalCalculatedAmount;
+	private String status;
 	
 	public CurrencyBean() {
 		super();
@@ -22,7 +23,7 @@ public class CurrencyBean {
 
 	
 	public CurrencyBean(String id, String from, String to, BigDecimal conversionMultiple, BigDecimal quantity,
-			BigDecimal totalCalculatedAmount) {
+			BigDecimal totalCalculatedAmount,String status) {
 		super();
 		this.id = id;
 		this.from = from;
@@ -30,6 +31,7 @@ public class CurrencyBean {
 		this.conversionMultiple = conversionMultiple;
 		this.quantity = quantity;
 		this.totalCalculatedAmount = totalCalculatedAmount;
+		this.status = status;
 	}
 
 
@@ -82,10 +84,20 @@ public class CurrencyBean {
 	}
 
 
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
 	@Override
 	public String toString() {
 		return "CurrencyBean [id=" + id + ", from=" + from + ", to=" + to + ", conversionMultiple=" + conversionMultiple
-				+ ", quantity=" + quantity + ", totalCalculatedAmount=" + totalCalculatedAmount + "]";
+				+ ", quantity=" + quantity + ", totalCalculatedAmount=" + totalCalculatedAmount + ", status=" + status +"]";
 	}
 	
 	

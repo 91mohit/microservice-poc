@@ -17,6 +17,7 @@ private CurrencyConversionRepository currencyConversionRepository;
 	
 	@Override
 	public CurrencyBean addConversionDetails(CurrencyBean currencyBean) {
+		currencyBean.setStatus("Requested");
 		return currencyConversionRepository.save(currencyBean);
 	}
 
@@ -32,6 +33,7 @@ private CurrencyConversionRepository currencyConversionRepository;
 		CurrencyBean dbBean = currencyDbBean.get();
 		dbBean.setConversionMultiple(currencyBean.getConversionMultiple());
 		dbBean.setTotalCalculatedAmount(currencyBean.getQuantity().multiply(dbBean.getConversionMultiple()));
+		dbBean.setStatus("Success");
 		return currencyConversionRepository.save(dbBean);
 	}
 
