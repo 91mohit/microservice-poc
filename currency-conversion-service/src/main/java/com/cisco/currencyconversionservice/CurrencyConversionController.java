@@ -7,11 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.cisco.currencyconversionservice.kafkaservice.KafkaPublisher;
+import com.cisco.currencyconversionservice.model.CurrencyBean;
+import com.cisco.currencyconversionservice.model.CurrencyConversionBean;
+import com.cisco.currencyconversionservice.service.CurrencyConversionService;
 
 import io.swagger.annotations.Api;
 
@@ -19,28 +25,26 @@ import io.swagger.annotations.Api;
 @Api(value = "CurrencyConversionController REST Endpoint", description = "Convert currency as per exchange Value")
 public class CurrencyConversionController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
-	private CurrencyExchangeServiceProxy proxy;
+	private KafkaPublisher publisher;
 	@Autowired
-	private KafkaTemplate<String, CurrencyConversionBean> kafkaTemplate;
-	private static final String TOPIC = "kafka_example";
+	private CurrencyConversionService conversionService;
 
 	@PostMapping("/publishToKafka")
-	public String convertCurrency(@RequestBody CurrencyConversionBean conversionBean) {
-		Map<String, String> uriVariables = new HashMap<>();
-		uriVariables.put("from", conversionBean.getFrom());
-		uriVariables.put("to", conversionBean.getTo());
+	public CurrencyBean convertCurrency(@RequestBody CurrencyBean currencyBean) {
+		logger.info("Request Recieved: " + currencyBean.toString());
+		currencyBean = conversionService.addConversionDetails(currencyBean);
+		publisher.publishToKafka(currencyBean);
+		return currencyBean;
 
-		ResponseEntity<CurrencyConversionBean> responseEntity = new RestTemplate().getForEntity(
-				"http://localhost:8000/currency-exchange/from/{from}/to/{to}", CurrencyConversionBean.class,
-				uriVariables);
+	}
 
-		CurrencyConversionBean response = responseEntity.getBody();
+	@GetMapping("/getCurrencyDetails")
+	public CurrencyBean convertCurrency(@RequestParam("id") String id) {
+		logger.info("Request Recieved: " + id);
+		return conversionService.getConversionDetail(id);
 
-		kafkaTemplate.send(TOPIC,response);
-		return "Published successfully";
-		
 	}
 
 	@PostMapping("/currencyconverter")
@@ -57,7 +61,8 @@ public class CurrencyConversionController {
 		CurrencyConversionBean response = responseEntity.getBody();
 
 		logger.info("{}", response);
-		return new CurrencyConversionBean(response.getId(), conversionBean.getFrom(), conversionBean.getTo(), response.getConversionMultiple(), conversionBean.getQuantity(),
+		return new CurrencyConversionBean(response.getId(), conversionBean.getFrom(), conversionBean.getTo(),
+				response.getConversionMultiple(), conversionBean.getQuantity(),
 				conversionBean.getQuantity().multiply(response.getConversionMultiple()));
 	}
 

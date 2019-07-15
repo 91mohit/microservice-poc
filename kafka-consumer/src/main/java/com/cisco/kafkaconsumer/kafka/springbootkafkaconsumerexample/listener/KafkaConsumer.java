@@ -1,22 +1,34 @@
 package com.cisco.kafkaconsumer.kafka.springbootkafkaconsumerexample.listener;
 
+import java.math.BigDecimal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.cisco.kafkaconsumer.kafka.springbootkafkaconsumerexample.model.CurrencyConversionBean;
+import com.cisco.kafkaconsumer.kafka.springbootkafkaconsumerexample.model.CurrencyBean;
 
 @Service
 public class KafkaConsumer {
-
-    @KafkaListener(topics = "Kafka_Example", groupId = "group_id")
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private KafkaPublisher kafkaPublisher;
+	
+    @KafkaListener(topics = "kafka_example", groupId = "group_id")
     public void consume(String message) {
-        System.out.println("Consumed message: " + message);
+    	logger.info("Consumed message: " + message);
     }
 
 
-    @KafkaListener(topics = "Kafka_Example_json", groupId = "group_json",
-            containerFactory = "userKafkaListenerFactory")
-    public void consumeJson(CurrencyConversionBean conversionBean) {
-        System.out.println("Consumed JSON Message: " + conversionBean);
+    @KafkaListener(topics = "Request_Topic", groupId = "group_json",
+            containerFactory = "conversionKafkaListenerFactory")
+    public void consumeJson(CurrencyBean conversionBean) {
+    	logger.info("Consumed JSON Message: " + conversionBean.toString());
+    	conversionBean.setConversionMultiple(BigDecimal.valueOf(69));
+    	kafkaPublisher.publishToKafka(conversionBean);
     }
 }

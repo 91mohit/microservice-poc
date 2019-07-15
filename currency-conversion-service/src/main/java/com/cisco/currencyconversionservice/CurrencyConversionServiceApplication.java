@@ -3,11 +3,11 @@ package com.cisco.currencyconversionservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@EnableFeignClients("com.cisco.currencyconversionservice")
 @EnableDiscoveryClient
+@EnableMongoRepositories("com.cisco.currencyconversionservice.model.mongodb.repositories")
 public class CurrencyConversionServiceApplication {
 
 	public static void main(String[] args) {

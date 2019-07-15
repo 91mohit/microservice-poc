@@ -26,7 +26,7 @@ public class ZuulLoggingFilter extends ZuulFilter {
 		
 		logger.info("request -> {} request uri -> {}", 
 				 request.getHeader("Authorization"), request.getRequestURI());
-		return null;
+		return ctx;
 	}
 
 	@Override

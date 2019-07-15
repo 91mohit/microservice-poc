@@ -1,12 +1,17 @@
-package com.cisco.kafkaconsumer.kafka.springbootkafkaconsumerexample.model;
+package com.cisco.currencyconversionservice.model;
 
 import java.math.BigDecimal;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class CurrencyConversionBean {
 	private Long id;
+	@ApiModelProperty(notes = "Currency To be Exchange")
 	private String from;
+	@ApiModelProperty(notes = "Target Currency")
 	private String to;
 	private BigDecimal conversionMultiple;
+	@ApiModelProperty(notes = "How much currency we want to convert")
 	private BigDecimal quantity;
 	private BigDecimal totalCalculatedAmount;
 	public CurrencyConversionBean() {
