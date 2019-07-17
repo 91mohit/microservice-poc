@@ -1,12 +1,17 @@
 package com.cisco.currencyconversionservice.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "CurrencyDetails")
-public class CurrencyBean {
+public class CurrencyBean implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1715013701934682445L;
 	@Id
 	private String id;
 	private String from;

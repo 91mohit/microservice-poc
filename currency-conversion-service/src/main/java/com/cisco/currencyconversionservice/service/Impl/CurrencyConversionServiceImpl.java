@@ -3,6 +3,7 @@ package com.cisco.currencyconversionservice.service.Impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.cisco.currencyconversionservice.model.CurrencyBean;
@@ -17,10 +18,11 @@ private CurrencyConversionRepository currencyConversionRepository;
 	
 	@Override
 	public CurrencyBean addConversionDetails(CurrencyBean currencyBean) {
-		currencyBean.setStatus("Requested");
+		currencyBean.setStatus("UnInitialized");
 		return currencyConversionRepository.save(currencyBean);
 	}
-
+	
+	@Cacheable("CurrencyBean")
 	@Override
 	public CurrencyBean getConversionDetail(String id) {
 		Optional<CurrencyBean> currencyDbBean = currencyConversionRepository.findById(id);
